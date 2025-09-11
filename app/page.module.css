@@ -98,9 +98,11 @@ a.secondary {
 }
 
 .footer a {
-  display: flex;
   align-items: center;
+  color: #0174CE;
+  display: flex;
   gap: 8px;
+  text-decoration: none;
 }
 
 .footer img {

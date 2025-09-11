@@ -3,14 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { isSupported, getMessaging, getToken, onMessage, type MessagePayload } from 'firebase/messaging';
 import { firebaseApp } from '@/lib/firebase';
+import styles from './FcmClient.module.css';
 
 export default function FcmClient() {
   const [supported, setSupported] = useState<boolean | null>(null);
-  const [permission, setPermission] = useState<NotificationPermission>('default'); // SSRでは'default'
+  const [permission, setPermission] = useState<NotificationPermission>('default');
   const [token, setToken] = useState<string>('');
   const [lastMsg, setLastMsg] = useState<MessagePayload | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isFetchingToken, setIsFetchingToken] = useState(false);
+  const [copied, setCopied] = useState(false);
   const swRegRef = useRef<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {
@@ -23,7 +25,6 @@ export default function FcmClient() {
       if (typeof Notification !== 'undefined') {
         setPermission(Notification.permission);
       }
-
       if (!ok || !('serviceWorker' in navigator)) return;
 
       const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
@@ -59,7 +60,7 @@ export default function FcmClient() {
       }
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY!;
       if (!vapidKey) {
-        setErrorMsg('VAPID NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY を確認してください。');
+        setErrorMsg('VAPID 公開鍵が未設定です。NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY を確認してください。');
         return;
       }
       const reg = swRegRef.current ?? (await navigator.serviceWorker.ready);
@@ -76,7 +77,6 @@ export default function FcmClient() {
 
   const requestAndGetToken = async () => {
     setErrorMsg('');
-
     if (!(await isSupported())) {
       setErrorMsg('このブラウザは FCM の Web Push に対応していません。');
       return;
@@ -85,55 +85,82 @@ export default function FcmClient() {
       setErrorMsg('この環境では通知APIが利用できません。');
       return;
     }
-
     const p = await Notification.requestPermission();
     setPermission(p);
     if (p !== 'granted') {
-      if (p === 'denied') {
-        setErrorMsg('通知がブロックされています。ブラウザのサイト設定から通知を許可してください。');
-      }
+      if (p === 'denied') setErrorMsg('通知がブロックされています。ブラウザのサイト設定から通知を許可してください。');
       return;
     }
-
-    await fetchToken(); // ← 許可されたらtoken取得
+    await fetchToken();
   };
- 
+
   useEffect(() => {
     if (supported && permission === 'granted' && !token && !isFetchingToken) {
       void fetchToken();
     }
-  }, [supported, permission, token, isFetchingToken]); 
+  }, [supported, permission, token, isFetchingToken]);
+
+  const copyToken = async () => {
+    try {
+      await navigator.clipboard.writeText(token);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* noop */
+    }
+  };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Web Push を有効化</h2>
+    <section className={styles.wrap}>
+      <div className={styles.card}>
+        <header className={styles.header}>
+          <h2 className={styles.title}>Web Push を有効化</h2>
+          <p className={styles.desc}>FCM コンソールからの配信テストに使う登録トークンを取得します。</p>
+          <div className={styles.badges}>
+            <span
+              className={`${styles.chip} ${supported === false ? styles.chipNg : styles.chipOk}`}
+            >
+              {supported === false ? '未対応ブラウザ' : 'FCM対応環境'}
+            </span>
+            <span className={`${styles.chip} ${styles.chipMuted}`}>
+              通知許可状態: {permission}
+            </span>
+          </div>
+        </header>
 
-      {permission !== 'granted' && (
-        <button
-          className="rounded px-3 py-2 border"
-          onClick={requestAndGetToken}
-          disabled={supported === false || isFetchingToken}
-        >
-          {isFetchingToken ? '処理中…' : '通知を有効化（許可をリクエスト）'}
-        </button>
-      )}
+        {permission !== 'granted' && (
+          <button
+            className={`${styles.btn} ${isFetchingToken ? styles.btnDisabled : ''}`}
+            onClick={requestAndGetToken}
+            disabled={supported === false || isFetchingToken}
+          >
+            {isFetchingToken ? '処理中…' : '通知を有効化（許可をリクエスト）'}
+          </button>
+        )}
 
-      {errorMsg && <p className="text-red-600 text-sm">{errorMsg}</p>}
+        {errorMsg && <p className={styles.error}>{errorMsg}</p>}
 
-      {isFetchingToken && !token && <p>トークン取得中…</p>}
-      {token && (
-        <div>
-          <p className="font-medium">登録トークン（FCMコンソールのテスト送信に使用）</p>
-          <textarea readOnly className="w-full h-32 p-2 border rounded" value={token} />
-        </div>
-      )}
+        {isFetchingToken && !token && <p className={styles.muted}>トークン取得中…</p>}
 
-      {lastMsg && (
-        <div className="border rounded p-3">
-          <p className="font-medium">フォアグラウンドで受信したメッセージ</p>
-          <pre className="text-sm overflow-auto">{JSON.stringify(lastMsg, null, 2)}</pre>
-        </div>
-      )}
-    </div>
+        {token && (
+          <div className={styles.tokenBlock}>
+            <label className={styles.label}>登録トークン（FCM コンソールのテスト送信に使用）</label>
+            <div className={styles.tokenRow}>
+              <textarea readOnly className={styles.textarea} value={token} />
+              <button className={styles.btnGhost} onClick={copyToken}>
+                {copied ? 'コピー済み' : 'コピー'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {lastMsg && (
+          <details className={styles.details}>
+            <summary className={styles.summary}>フォアグラウンドで受信したメッセージ</summary>
+            <pre className={styles.pre}>{JSON.stringify(lastMsg, null, 2)}</pre>
+          </details>
+        )}
+      </div>
+    </section>
   );
 }

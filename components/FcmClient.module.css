@@ -1,0 +1,163 @@
+.wrap {
+  max-width: 880px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e9e9ee;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  padding: 28px;
+}
+
+.header { margin-bottom: 16px; }
+
+.title {
+  font-size: 28px;
+  line-height: 1.25;
+  letter-spacing: .2px;
+  margin: 0 0 6px;
+}
+
+.desc {
+  color: #666a72;
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  box-shadow: none;           /* フラットでボタンと差別化 */
+}
+
+/* 状態別の色 */
+.chipOk {
+  background: #E8F5EE;        /* 淡いグリーン */
+  color: #23694B;             /* 文字色は濃いめの緑 */
+  border-color: #CFE9DB;
+}
+.chipNg {
+  background: #FDEAEA;        /* 淡いレッド */
+  color: #B42318;
+  border-color: #F5C2C0;
+}
+.chipMuted {
+  background: #EFF3F6;        /* 淡いグレー/ブルー */
+  color: #475569;              /* Slate と統一感 */
+  border-color: #D6DDE6;
+}
+
+/* ステータスドット */
+.chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: 0 0 6px;
+}
+.chipOk::before { background: #16a34a; }   /* green-600 */
+.chipNg::before { background: #e11d48; }   /* rose-600 */
+.chipMuted::before { background: #94a3b8; }/* slate-400 */
+
+/* --- 既存のボタン（主役）を少しだけ強調 --- */
+.btn {
+  background: #475569;        /* 採用色：Slate */
+  color: #fff;
+  border: 1px solid #415061;
+  font-weight: 600;           /* 文字を少し太く */
+  padding: 12px 20px;         /* ひと回り大きく */
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .04s ease, box-shadow .2s ease, opacity .2s ease, background .2s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,.14); /* バッジとの“立体差”を作る */
+}
+.btn:hover {
+  transform: translateY(-1px);
+  background: #536276;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+.btn:focus-visible { outline: 2px solid #0174CE; outline-offset: 2px; }
+.btn:active { transform: translateY(0); }
+.btnDisabled { opacity: .6; cursor: not-allowed; }
+
+.error {
+  margin-top: 10px;
+  color: #b00020;
+  background: #ffe9ec;
+  border: 1px solid #ffc6ce;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.muted { color: #6b7078; font-size: 13px; margin-top: 10px; }
+
+.tokenBlock { margin-top: 18px; }
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.tokenRow { display: flex; gap: 8px; align-items: stretch; }
+
+.textarea {
+  flex: 1;
+  min-height: 110px;
+  resize: vertical;
+  border-radius: 12px;
+  border: 1px solid #dddfe4;
+  background: #fafbfc;
+  padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #2a2d33;
+  outline: none;
+}
+.textarea:focus { border-color: #b8bdc6; background: #fff; }
+
+.btnGhost {
+  white-space: nowrap;
+  background: #f3f4f6;
+  color: #222;
+  border: 1px solid #e3e5e9;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+.btnGhost:hover { background: #eceef1; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+
+.details {
+  margin-top: 20px;
+  background: #fbfbfd;
+  border: 1px solid #ececf2;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #363a43;
+  outline: none;
+}
+.pre {
+  margin: 12px 0 0;
+  padding: 12px;
+  background: #f7f8fa;
+  border: 1px solid #ececf2;
+  border-radius: 10px;
+  font-size: 12px;
+  overflow: auto;
+}
