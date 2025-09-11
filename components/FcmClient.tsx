@@ -12,6 +12,7 @@ export default function FcmClient() {
   const [lastMsg, setLastMsg] = useState<MessagePayload | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isFetchingToken, setIsFetchingToken] = useState(false);
+  const [isPermissionKnown, setIsPermissionKnown] = useState(false);
   const [copied, setCopied] = useState(false);
   const swRegRef = useRef<ServiceWorkerRegistration | null>(null);
 
@@ -25,6 +26,7 @@ export default function FcmClient() {
       if (typeof Notification !== 'undefined') {
         setPermission(Notification.permission);
       }
+      setIsPermissionKnown(true);
       if (!ok || !('serviceWorker' in navigator)) return;
 
       const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
@@ -123,12 +125,12 @@ export default function FcmClient() {
               {supported === false ? '未対応ブラウザ' : 'FCM対応環境'}
             </span>
             <span className={`${styles.chip} ${styles.chipMuted}`}>
-              通知許可状態: {permission}
+              通知許可状態: {isPermissionKnown ? permission : '判定中…'}
             </span>
           </div>
         </header>
 
-        {permission !== 'granted' && (
+        {isPermissionKnown && permission !== 'granted' && (
           <button
             className={`${styles.btn} ${isFetchingToken ? styles.btnDisabled : ''}`}
             onClick={requestAndGetToken}
