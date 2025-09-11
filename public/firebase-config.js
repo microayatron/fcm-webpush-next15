@@ -1,10 +1,1 @@
-// Firebase Console > プロジェクト設定 > 一般 > SDKの設定 から取得
-self.firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID, // 任意 
-};  
+self.firebaseConfig = {"apiKey":"AIzaSyDS3z4RF8n8JQB6MvFmooD5Vxl6KoeyP-w","authDomain":"trog2-staging.firebaseapp.com","databaseURL":"https://trog2-staging.firebaseio.com","projectId":"trog2-staging","storageBucket":"trog2-staging.appspot.com","messagingSenderId":"866974718899","appId":"1:866974718899:web:3a420e68332e0715bac9c6","measurementId":"G-DQ650BR00H"};

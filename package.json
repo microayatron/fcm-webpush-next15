@@ -6,6 +6,8 @@
     "node": ">=22.19.0 < 23.0.0"
   },
   "scripts": {
+    "predev": "node scripts/generate-config.js",
+    "prebuild": "node scripts/generate-config.js",
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
