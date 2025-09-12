@@ -68,7 +68,6 @@
 .chipNg::before { background: #e11d48; }   /* rose-600 */
 .chipMuted::before { background: #94a3b8; }/* slate-400 */
 
-/* --- 既存のボタン（主役）を少しだけ強調 --- */
 .btn {
   background: #475569;        /* 採用色：Slate */
   color: #fff;

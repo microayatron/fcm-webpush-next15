@@ -29,8 +29,8 @@ export default function FcmClient() {
       setIsPermissionKnown(true);
       if (!ok || !('serviceWorker' in navigator)) return;
 
-      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-        scope: '/',
+      const reg = await navigator.serviceWorker.register('/console/firebase-messaging-sw.js', {
+        scope: '/console/',
         updateViaCache: 'none',
       });
       swRegRef.current = reg;

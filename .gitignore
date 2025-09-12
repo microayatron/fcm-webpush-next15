@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # Firebase build output
-public/firebase-config.js
+public/console/firebase-config.js

@@ -1,13 +1,13 @@
-import Image from "next/image";
 import styles from "./page.module.css";
-import FcmClient from '@/components/FcmClient';
 
 export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h1 className="text-2xl font-bold mb-4">FCM Web Push（実装編）</h1>
-        <FcmClient />
+        <h1>Web Push Lab</h1>
+        <a href="/console" className={styles.btn}>
+          FCMコンソールからのテスト送信
+        </a>
       </main>
       <footer className={styles.footer}>
         <a

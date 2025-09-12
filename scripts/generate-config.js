@@ -37,5 +37,5 @@ if (missing.length) {
 }
 
 const out = `self.firebaseConfig = ${JSON.stringify(config)};`;
-fs.writeFileSync(path.join(__dirname, '../public/firebase-config.js'), out, 'utf8');
+fs.writeFileSync(path.join(__dirname, '../public/console/firebase-config.js'), out, 'utf8');
 console.log('Firebase config generated:', MODE);
