@@ -3,9 +3,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { isSupported, getMessaging, getToken, onMessage, type MessagePayload } from 'firebase/messaging';
 import { firebaseApp } from '@/lib/firebase';
+import { getErrorMessage } from '@/lib/constants';
+import type { FCMClientProps, FCMClientState } from '@/lib/types';
+import { createDebugger, printDebugInfo } from '@/lib/debug';
 import styles from './FcmClient.module.css';
 
-export default function FcmClient() {
+/**
+ * FCMクライアントコンポーネント
+ * Web Push通知の有効化とFCMトークンの取得を行うコンポーネント
+ *
+ * @param props FCMClientProps - コンポーネントのプロパティ
+ * @returns JSX.Element
+ */
+export default function FcmClient({
+  swScope = '/console/',
+  swPath = '/console/firebase-messaging-sw.js',
+  debug = false,
+}: FCMClientProps = {}) {
   const [supported, setSupported] = useState<boolean | null>(null);
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [token, setToken] = useState<string>('');
@@ -15,6 +29,7 @@ export default function FcmClient() {
   const [isPermissionKnown, setIsPermissionKnown] = useState(false);
   const [copied, setCopied] = useState(false);
   const swRegRef = useRef<ServiceWorkerRegistration | null>(null);
+  const logger = useRef(createDebugger({ enabled: debug }));
 
   useEffect(() => {
     let mounted = true;
@@ -22,18 +37,21 @@ export default function FcmClient() {
       const ok = await isSupported().catch(() => false);
       if (!mounted) return;
       setSupported(ok);
+      logger.current.info('FCM support status:', ok);
 
       if (typeof Notification !== 'undefined') {
         setPermission(Notification.permission);
+        logger.current.info('Notification permission:', Notification.permission);
       }
       setIsPermissionKnown(true);
       if (!ok || !('serviceWorker' in navigator)) return;
 
-      const reg = await navigator.serviceWorker.register('/console/firebase-messaging-sw.js', {
-        scope: '/console/',
+      const reg = await navigator.serviceWorker.register(swPath, {
+        scope: swScope,
         updateViaCache: 'none',
       });
       swRegRef.current = reg;
+      logger.current.info('Service Worker registered:', { scope: swScope, path: swPath });
     })();
     return () => { mounted = false; };
   }, []);
@@ -45,8 +63,7 @@ export default function FcmClient() {
       const messaging = getMessaging(firebaseApp);
       unsub = onMessage(messaging, (payload) => {
         setLastMsg(payload);
-        // eslint-disable-next-line no-console
-        console.log('onMessage:', payload);
+        logger.current.debug('Received message:', payload);
       });
     })();
     return () => unsub();
@@ -57,12 +74,12 @@ export default function FcmClient() {
     setIsFetchingToken(true);
     try {
       if (!(await isSupported())) {
-        setErrorMsg('このブラウザは FCM の Web Push に対応していません。');
+        setErrorMsg(getErrorMessage('BROWSER_NOT_SUPPORTED'));
         return;
       }
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY!;
       if (!vapidKey) {
-        setErrorMsg('VAPID 公開鍵が未設定です。NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY を確認してください。');
+        setErrorMsg(getErrorMessage('VAPID_KEY_MISSING'));
         return;
       }
       const reg = swRegRef.current ?? (await navigator.serviceWorker.ready);
@@ -70,8 +87,8 @@ export default function FcmClient() {
       const t = await getToken(messaging, { vapidKey, serviceWorkerRegistration: reg });
       if (t) setToken(t);
     } catch (e) {
-      console.error('getToken failed:', e);
-      setErrorMsg('トークン取得に失敗しました。ページを再読み込みして再試行してください。');
+      logger.current.error('Failed to get token:', e);
+      setErrorMsg(getErrorMessage('TOKEN_FETCH_FAILED'));
     } finally {
       setIsFetchingToken(false);
     }
@@ -80,17 +97,17 @@ export default function FcmClient() {
   const requestAndGetToken = async () => {
     setErrorMsg('');
     if (!(await isSupported())) {
-      setErrorMsg('このブラウザは FCM の Web Push に対応していません。');
+      setErrorMsg(getErrorMessage('BROWSER_NOT_SUPPORTED'));
       return;
     }
     if (typeof Notification === 'undefined') {
-      setErrorMsg('この環境では通知APIが利用できません。');
+      setErrorMsg(getErrorMessage('NOTIFICATION_API_UNAVAILABLE'));
       return;
     }
     const p = await Notification.requestPermission();
     setPermission(p);
     if (p !== 'granted') {
-      if (p === 'denied') setErrorMsg('通知がブロックされています。ブラウザのサイト設定から通知を許可してください。');
+      if (p === 'denied') setErrorMsg(getErrorMessage('NOTIFICATION_BLOCKED'));
       return;
     }
     await fetchToken();
@@ -161,6 +178,17 @@ export default function FcmClient() {
             <summary className={styles.summary}>フォアグラウンドで受信したメッセージ</summary>
             <pre className={styles.pre}>{JSON.stringify(lastMsg, null, 2)}</pre>
           </details>
+        )}
+
+        {debug && (
+          <div className={styles.debugTools}>
+            <button
+              className={styles.btnDebug}
+              onClick={() => printDebugInfo()}
+            >
+              デバッグ情報を表示
+            </button>
+          </div>
         )}
       </div>
     </section>
