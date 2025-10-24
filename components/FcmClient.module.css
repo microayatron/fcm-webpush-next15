@@ -36,27 +36,25 @@
   line-height: 1;
   border-radius: 999px;
   border: 1px solid transparent;
-  box-shadow: none;           /* フラットでボタンと差別化 */
+  box-shadow: none;
 }
 
-/* 状態別の色 */
 .chipOk {
-  background: #E8F5EE;        /* 淡いグリーン */
-  color: #23694B;             /* 文字色は濃いめの緑 */
+  background: #E8F5EE;
+  color: #23694B;
   border-color: #CFE9DB;
 }
 .chipNg {
-  background: #FDEAEA;        /* 淡いレッド */
+  background: #FDEAEA;
   color: #B42318;
   border-color: #F5C2C0;
 }
 .chipMuted {
-  background: #EFF3F6;        /* 淡いグレー/ブルー */
-  color: #475569;              /* Slate と統一感 */
+  background: #EFF3F6;
+  color: #475569;
   border-color: #D6DDE6;
 }
 
-/* ステータスドット */
 .chip::before {
   content: "";
   width: 6px;
@@ -64,33 +62,20 @@
   border-radius: 50%;
   flex: 0 0 6px;
 }
-.chipOk::before { background: #16a34a; }   /* green-600 */
-.chipNg::before { background: #e11d48; }   /* rose-600 */
-.chipMuted::before { background: #94a3b8; }/* slate-400 */
-
-.chipButton {
-  cursor: pointer;
-  background: #f3f4f6;
-  border-color: #e3e5e9;
-  transition: background .2s ease;
-}
-.chipButton:hover {
-  background: #eceef1;
-}
-.chipButton::before {
-  display: none;
-}
+.chipOk::before { background: #16a34a; }
+.chipNg::before { background: #e11d48; }
+.chipMuted::before { background: #94a3b8; }
 
 .btn {
-  background: #475569;        /* 採用色：Slate */
+  background: #475569;
   color: #fff;
   border: 1px solid #415061;
-  font-weight: 600;           /* 文字を少し太く */
-  padding: 12px 20px;         /* ひと回り大きく */
+  font-weight: 600;
+  padding: 12px 20px;
   border-radius: 999px;
   cursor: pointer;
   transition: transform .04s ease, box-shadow .2s ease, opacity .2s ease, background .2s ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,.14); /* バッジとの“立体差”を作る */
+  box-shadow: 0 6px 18px rgba(0,0,0,.14);
 }
 .btn:hover {
   transform: translateY(-1px);
