@@ -34,6 +34,10 @@
   grid-row-start: 2;
 }
 
+.main h1 {
+  text-align: center;
+}
+
 .main ol {
   font-family: var(--font-geist-mono);
   padding-left: 0;
@@ -55,6 +59,26 @@
   border-radius: 4px;
   font-weight: 600;
 }
+
+.btn {
+  background: #475569;
+  color: #fff;
+  border: 1px solid #415061;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform .04s ease, box-shadow .2s ease, opacity .2s ease, background .2s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,.14);
+}
+.btn:hover {
+  transform: translateY(-1px);
+  background: #536276;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+.btn:focus-visible { outline: 2px solid #0174CE; outline-offset: 2px; }
+.btn:active { transform: translateY(0); }
+.btnDisabled { opacity: .6; cursor: not-allowed; }
 
 .ctas {
   display: flex;
@@ -98,16 +122,17 @@ a.secondary {
 }
 
 .footer a {
-  display: flex;
   align-items: center;
+  color: #0174CE;
+  display: flex;
   gap: 8px;
+  text-decoration: none;
 }
 
 .footer img {
   flex-shrink: 0;
 }
 
-/* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
     background: var(--button-primary-hover);

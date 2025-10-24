@@ -1,0 +1,1 @@
+self.firebaseConfig = {"apiKey":"AIzaSyDS3z4RF8n8JQB6MvFmooD5Vxl6KoeyP-w","authDomain":"trog2-staging.firebaseapp.com","databaseURL":"https://trog2-staging.firebaseio.com","projectId":"trog2-staging","storageBucket":"trog2-staging.appspot.com","messagingSenderId":"866974718899","appId":"1:866974718899:web:3a420e68332e0715bac9c6","measurementId":"G-DQ650BR00H"};
