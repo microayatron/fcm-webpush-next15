@@ -1,4 +1,3 @@
-// Error messages for FCM client
 export const FCM_ERRORS = {
   BROWSER_NOT_SUPPORTED: 'このブラウザは FCM の Web Push に対応していません。',
   VAPID_KEY_MISSING: 'VAPID 公開鍵が未設定です。NEXT_PUBLIC_FIREBASE_WEBPUSH_KEY を確認してください。',

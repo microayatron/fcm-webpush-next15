@@ -1,4 +1,3 @@
-// lib/firebase.ts
 import { initializeApp, type FirebaseOptions } from 'firebase/app';
 
 
