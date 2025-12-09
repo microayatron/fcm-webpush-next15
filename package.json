@@ -17,8 +17,8 @@
     "dotenv": "^17.2.2",
     "firebase": "^10.13.2",
     "next": "^15.5.7",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
